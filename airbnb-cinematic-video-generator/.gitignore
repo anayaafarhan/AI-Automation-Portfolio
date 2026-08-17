@@ -1,0 +1,15 @@
+# Generated output — keep the folder, not the renders
+output/*.mp4
+output/storyboard.json
+!output/.gitkeep
+
+# User-supplied audio — keep the folder, not the files
+music/*
+!music/.gitkeep
+
+# Sample/test photos — keep the folder, not the files
+input_photos/*
+!input_photos/.gitkeep
+
+__pycache__/
+*.pyc
