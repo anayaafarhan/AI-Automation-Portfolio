@@ -30,7 +30,7 @@ try:
     from pipeline.storyboard import build_storyboard, write_storyboard, load_storyboard
     from pipeline.motion import build_clip
     from pipeline.grade_assemble import concat_with_xfade, apply_grade, total_duration_with_xfade
-    from pipeline.audio import prepare_audio, mux_final, make_preview
+    from pipeline.audio import prepare_audio, layer_soundscape, mux_final, make_preview
     from pipeline.typography import find_font, FONT_SERIF_CANDIDATES, FONT_SANS_CANDIDATES
     from pipeline.demo_assets import generate_demo_assets
 except ImportError:
@@ -138,7 +138,8 @@ def main():
         graded = apply_grade(assembled, cfg, work_dir)
 
         print("[5/6] Sound design ...")
-        audio_path = prepare_audio(cfg, total_est, work_dir)
+        music_path = prepare_audio(cfg, total_est, work_dir)
+        audio_path = layer_soundscape(music_path, shots, cfg, total_est, work_dir)
 
         print("[6/6] Muxing final deliverables ...")
         final_path = output_dir / "final_reel.mp4"

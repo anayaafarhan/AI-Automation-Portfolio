@@ -67,14 +67,21 @@ def concat_with_xfade(clips: list[Path], durations: list[float], cfg: Config, wo
 
 
 def grade_filter_chain(cfg: Config) -> str:
+    """Neutral, restrained cinematic grade: gentle highlight rolloff so
+    bright skies/pool water don't clip, a touch of contrast, and a hint of
+    uniform warmth. Deliberately NOT a shadow/highlight split-tone (no
+    teal-and-orange) — that reads as "obviously filtered" rather than
+    premium, and real-estate footage is judged on how true the property's
+    actual materials and light look, not on a color-grading flourish."""
     s = max(0.0, cfg.grade_strength)
     if s == 0:
         return "null"
     parts = [
-        "curves=preset=medium_contrast",
-        f"eq=saturation={1 + 0.08*s:.3f}:contrast={1 + 0.03*s:.3f}",
-        f"colorbalance=rs={0.03*s:.3f}:bs={-0.03*s:.3f}:rm={0.02*s:.3f}:bm={-0.02*s:.3f}:rh={0.04*s:.3f}:bh={-0.02*s:.3f}",
-        f"vignette=PI/{max(5.0, 7-s):.2f}",
+        # gentle S-curve with highlight control instead of a flat contrast
+        # preset — keeps bright skies/water from blowing out
+        f"curves=master='0/0 0.25/0.22 0.5/0.51 0.75/0.79 0.92/0.94 1/1'",
+        f"eq=saturation={1 + 0.05*s:.3f}:contrast={1 + 0.02*s:.3f}:gamma_r={1 + 0.008*s:.4f}:gamma_b={1 - 0.006*s:.4f}",
+        f"vignette=PI/{max(6.5, 9-s):.2f}",
     ]
     if cfg.film_grain:
         parts.append(f"noise=alls={max(2,int(4*s))}:allf=t")

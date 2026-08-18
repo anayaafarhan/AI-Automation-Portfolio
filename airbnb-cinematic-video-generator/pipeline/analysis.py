@@ -35,8 +35,8 @@ ROOM_KEYWORDS: list[tuple[list[str], str]] = [
     (["night", "evening", "sunset", "dusk", "golden"], "Golden Hour"),
 ]
 NARRATIVE_ORDER = [
-    "Exterior", "Living Room", "Kitchen", "Dining Area", "Bedroom",
-    "Bathroom", "Pool", "Garden", "View", "Golden Hour", "Featured Space",
+    "Exterior", "Living Room", "Kitchen", "Dining Area", "Pool", "Garden",
+    "Bedroom", "Bathroom", "View", "Golden Hour", "Featured Space",
 ]
 
 

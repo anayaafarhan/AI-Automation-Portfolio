@@ -161,19 +161,19 @@ def build_storyboard(assets: list[Asset], cfg: Config) -> list[Shot]:
 
 
 def _assign_captions(shots: list[Shot], cfg: Config) -> None:
-    """Spread amenity callouts sparsely across the middle of the video —
-    never one per shot. At most one callout every other shot, capped by
-    however many amenities were configured."""
+    """One combined amenity line, shown once — not a callout per shot.
+    Placed on the strongest outdoor/amenity shot available (pool, then
+    view/garden), falling back to the middle shot, so it never collides
+    with the opening title card or the closing CTA."""
     if not cfg.amenities or len(shots) < 2:
         return
-    usable_indices = list(range(1, len(shots) - 1)) or [0]
-    step = max(1, len(usable_indices) // max(1, len(cfg.amenities)))
-    idx_ptr = 0
-    for i, amenity in enumerate(cfg.amenities):
-        pos = i * step
-        if pos >= len(usable_indices):
-            break
-        shots[usable_indices[pos]].caption = amenity
+    line = " • ".join(cfg.amenities)
+    candidates = [i for i, s in enumerate(shots) if 0 < i < len(shots) - 1 and s.category == "Pool"]
+    if not candidates:
+        candidates = [i for i, s in enumerate(shots) if 0 < i < len(shots) - 1 and s.category in ("View", "Garden")]
+    if not candidates:
+        candidates = list(range(1, len(shots) - 1)) or [0]
+    shots[candidates[0]].caption = line
 
 
 def write_storyboard(shots: list[Shot], cfg: Config, path: Path) -> None:
